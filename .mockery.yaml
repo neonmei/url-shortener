@@ -1,0 +1,13 @@
+with-expecter: True
+dir: 'mocks/{{.PackagePath}}'
+packages:
+    github.com/neonmei/challenge_urlshortener/domain:
+      config:
+        dir: 'mocks/{{.PackageName}}'
+      interfaces:
+          URLRepository:
+    github.com/neonmei/challenge_urlshortener/platform/clients:
+      config:
+        dir: 'mocks/{{.PackageName}}'
+      interfaces:
+          DynamoDbClient:
