@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,11 @@ func routes(apiRouter *gin.Engine, cfg config.AppConfig, e application.Service) 
 
 	// Platform endpoints
 	apiRouter.GET("/platform/healthz", func(ctx *gin.Context) { handleHealth(e, ctx) })
+
+	apiRouter.LoadHTMLFiles(
+		fmt.Sprintf("assets/%s", StatusNotFoundTemplate),
+		fmt.Sprintf("assets/%s", InternalServiceErrorTemplate),
+	)
 }
 
 func TokenAuthMiddleware(cfg config.AppConfig) gin.HandlerFunc {
