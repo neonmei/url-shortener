@@ -1,0 +1,85 @@
+#+title: Requirements
+
+* Intro
+
+At this stage of the process, we want to understand how you perform in situations similar to those we face daily in the team.
+
+Our main activity is developing the solutions and tools used by all of Acme, so we're presenting you with a development exercise. We want to get a sense of your applied technical skills and how you manage situations of uncertainty.
+
+This exercise has two steps:
+
+** STEP #1 - Solution Development
+
+We're going to ask you to design and develop a solution over a few days that meets the specification. We've designed this challenge to be completed in one week, so be careful with over engineering.
+
+** STEP #2 - Solution Presentation
+
+We're going to ask you to defend the solution you developed and ideally do a live demo.
+
+For us, the result of the exercise isn't as important (there's no single correct solution) as understanding why you arrived at that particular solution.
+
+You'll likely have questions when reading this challenge - you can contact us at any time to resolve any questions that arise.
+
+* Challenge
+
+Acme has been growing very rapidly in recent years. The shopping experience and the number of product references we have are key to understanding that growth, but let's be honest, you don't grow just by having a great product, but by communicating and having great marketing campaigns.
+
+In that vein, we want to equip the marketing team with tools to make communications through messaging channels like SMS or Twitter. In these channels, it's very important that communications be short, so it's necessary to develop a URL shortener.
+
+** What is a URL shortener?
+
+It's a service that allows two things:
+
+1. Shorten long URLs
+   When a Marketing user enters
+   https://electronics.acme.com/home-security/#menu=categories
+   it returns
+   https://acme.short/XXYYZZ
+
+2. Get the original URL from a shortened URL
+   Following the previous example, when an end user of Acme navigates to
+   https://acme.short/XXYYZZ
+   they actually access
+   https://electronics.acme.com/home-security/#menu=categories
+
+That way, instead of sending a marketing message of 162 characters like:
+
+#+begin_example
+Don't miss the unique opportunities we
+have to improve security in your home at
+https://electronics.acme.com/home-security/#menu=categories
+#+end_example
+
+you can send one with 111 characters like this:
+
+#+begin_example
+Don't miss the unique opportunities we
+have to improve security in your home at
+https://acme.short/XXYYZZ
+#+end_example
+
+** What do we ask of you?
+
+We ask you to develop a service that:
+
+- Given a long URL, my service must return a short URL.
+- Given a short URL, my service must return the original long URL.
+- Statistics can be obtained for URLs that use this service.
+- Can handle large-scale requests.
+- 90% of all requests can be responded to in less than 10 ms.
+- Short URLs can be deleted as needed.
+- And logically, that the user navigates to the long URL when they enter a valid short URL in their browser :)
+
+At Acme, scale is important, so think of a solution that can scale to at least 50,000 requests per second.
+
+Similarly, creating a short URL should be a process that takes little time (on the order of 1 second).
+
+** What will we test when you come?
+
+- We're going to want to make requests to the creation and deletion API to verify that short URLs are effectively created and destroyed.
+- We're going to use the short URL in a Chrome browser and verify that we can reach the long URL.
+- We're going to want to understand what happens when different components of the solution you develop or have chosen to integrate fail.
+
+** What don't you need to do?
+
+You don't need to make any graphical interface or management backoffice.
