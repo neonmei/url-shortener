@@ -1,0 +1,118 @@
+#+title: URL Shortener Service
+
+* Context
+This repository is part of a tech challenge for a Senior Software Engineer Role. This tech challenge requires designing a solution that meets the requirements and then review the architecture with a review panel. Given the short time for the exercise, it is expected not to be fully implemented[fn:1] or having a tradeoff in implementation for sparking some chat during the review panel.
+
+Requirements snippet [[./resources/requirements.org][from the doc]]:
+- Given a long URL, my service must return a short URL.
+- Given a short URL, my service must return the original long URL.
+- Statistics can be obtained for URLs that use this service.
+- Can handle large-scale requests.
+- 90% of all requests can be responded to in less than 10 ms.
+- Short URLs can be deleted as needed.
+- And logically, that the user navigates to the long URL when they enter a valid short URL in their browser :)
+- Can scale to at least 50,000 requests per second.
+- Creating a short URL should be a process that takes little time (on the order of 1 second).
+
+* Details
+** Features
+- URL shortening with base62 encoding
+- DynamoDB-backed persistence with local development support
+- In-memory caching using Ristretto
+- OpenTelemetry instrumentation for tracing and metrics
+- RESTful API with authentication
+- Graceful shutdown handling
+- Health check endpoints
+- Configurable via environment variables
+** Prerequisites
+- Go 1.22 or later
+- Docker (for local DynamoDB)
+- AWS credentials (for production DynamoDB)
+- [[https://github.com/casey/just][just]] command runner (optional)
+
+** Quick Start
+1. Set up local DynamoDB with dynamodb local or ScyllaDB (alternator):
+
+#+begin_src sh
+just ddb-run         # Start local DynamoDB
+just ddb-create      # Create required table
+#+end_src
+
+#+begin_src sh
+just scylla          # Start local DynamoDB
+just ddb-create      # Create required table
+#+end_src
+
+2. Configure environment variables (see =.env= file for examples):
+
+#+begin_src sh
+export SHORTENER_API_KEY="your-api-key"
+export SHORTENER_BASE_URL="http://localhost:8080"
+#+end_src
+
+3. Run the service:
+
+#+begin_src sh
+just run
+#+end_src
+
+** API Endpoints
+*** Public Endpoints
+- =GET /:url_id= - Redirect to original URL
+
+*** Administrative Endpoints (Requires API Key)
+- =POST /v1/urls/short= - Create short URL
+- =DELETE /v1/urls/short/:url_id= - Delete short URL
+- =GET /v1/urls/short/:url_id= - Fetch URL details
+
+*** Platform Endpoints
+- =GET /platform/healthz= - Health check
+
+** Development
+*** Running Tests
+#+begin_src sh
+just test          # Run all tests
+just coverage      # Generate coverage report
+#+end_src
+
+*** Code Quality
+#+begin_src sh
+just fmt           # Format code
+just lint          # Run linter
+just vet          # Run Go vet
+#+end_src
+
+*** Performance Testing
+Performance testing scripts are in a separate K6 repo. But the initial
+dataset can be generated with:
+
+#+begin_src sh
+just perftest-dataset  # Generate test dataset
+#+end_src
+
+** Configuration
+The service is configured via environment variables. Key configurations are:
+- =SHORTENER_PORT= - HTTP server port (default: 8080)
+- =SHORTENER_BASE_URL= - Base URL for shortened links
+- =SHORTENER_API_KEY= - Authentication token for admin endpoints
+- =SHORTENER_CACHE_METRICS_ENABLED= - Enable cache metrics
+- =AWS_ENDPOINT_URL_DYNAMODB= - DynamoDB endpoint
+- =OTEL_*= - OpenTelemetry configuration
+
+See =config/config.go= for all available options.
+
+** Architecture
+*** Key Components
+:PROPERTIES:
+:CUSTOM_ID: key-components
+:END:
+- *URL Generation*: Uses base62 encoding with configurable collision
+  handling
+- *Storage*: DynamoDB with local development support
+- *Caching*: Ristretto in-memory cache with optional metrics
+- *Observability*: OpenTelemetry integration for tracing and metrics
+- *API*: Gin web framework with middleware support
+
+* Footnotes
+
+[fn:1] for example didn't get to implement proper cache invalidation: https://www.atlassian.com/blog/atlassian-engineering/atlassian-critical-services-above-six-nines-of-availability
